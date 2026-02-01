@@ -3,28 +3,32 @@ pipeline {
 
     stages {
 
-        stage('Install') {
+        stage('Install Dependencies') {
             steps {
                 bat 'npm install'
             }
         }
 
-        stage('Run') {
-            steps {
-                bat 'start "" npm start'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
+                // Stop old container if running
+                bat 'docker stop easyshop || echo "No container to stop"'
+                bat 'docker rm easyshop || echo "No container to remove"'
+
+                // Remove old image if exists
+                bat 'docker rmi easyshop:latest || echo "No old image to remove"'
+
+                // Build new image
                 bat 'docker build -t easyshop:latest .'
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Container') {
             steps {
-                bat 'docker run -d -p 3000:3000 easyshop:latest'
+                // Run fresh container on port 3001
+                bat 'docker run -d -p 3001:3001 --name easyshop easyshop:latest'
             }
         }
     }
+}
 }

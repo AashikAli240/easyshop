@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easyshop
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: easyshop
+  template:
+    metadata:
+      labels:
+        app: easyshop
+    spec:
+      containers:
+      - name: easyshop
+        image: easyshop:latest
+        ports:
+        - containerPort: 3001
